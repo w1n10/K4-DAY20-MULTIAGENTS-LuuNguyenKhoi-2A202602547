@@ -1,0 +1,74 @@
+{
+  "task": "logs-eval",
+  "condition": "subagents",
+  "role": "eval",
+  "error": "GoogleRateLimitError: Error calling model 'gemini-3.1-flash-lite' (RESOURCE_EXHAUSTED): 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 500, model: gemini-3.1-flash-lite\\nPlease retry in 18h10m3.939539747s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.1-flash-lite'}, 'quotaValue': '500'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '65403s'}]}}",
+  "timestamp": "2026-10-06T05:49:00.893422+00:00",
+  "skills_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "seconds": 56.6,
+  "tokens": {
+    "input": 28848,
+    "output": 806,
+    "total": 29654
+  },
+  "tool_calls": 6,
+  "subagent_calls": 0,
+  "skills_read": 0,
+  "skills_modified": false,
+  "final_message": "",
+  "score": 0.6,
+  "passed": 6,
+  "total": 10,
+  "checks": [
+    {
+      "name": "valid_structure",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "entry_count",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "timestamps_utc",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "levels_uppercase",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "repeat_counts",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "counts_by_service",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "rule_service_names",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "name": "rule_sorted_errors",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "name": "rule_schema_header",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "name": "rule_source_line",
+      "passed": false,
+      "detail": ""
+    }
+  ]
+}
