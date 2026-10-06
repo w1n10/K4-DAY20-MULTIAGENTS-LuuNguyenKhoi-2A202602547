@@ -19,19 +19,24 @@ Find the general PROCESS mistakes and organisation conventions behind them (not 
 {max_skills} short skills that prevent those mistakes on NEW tasks of the same kind.
 
 Rules:
+- The agent that will use your skills on a new task NEVER sees the grader's feedback: the "RULE:" lines below are
+  organisation conventions that are NOT written in the task statement. So each skill must restate every convention
+  concretely and completely (exact file names, headers, JSON keys and values, units, sort orders, naming formats),
+  so that the agent can apply it without any feedback. "Follow the rules" or "as specified" is useless.
 - Skills must be general: never name a task id, never name a data file, function or column specific to one task,
   never state an answer or a number computed for a task. File names, JSON keys or headings REQUIRED by a convention
   stated in the feedback (lines starting with "RULE:") are allowed, because they are the convention itself.
 - Each skill has a YAML frontmatter with `name` (lower-case, hyphens) and `description` (one sentence starting with
   "Use when ..." that names the broad kind of task), then at most 40 lines of imperative, numbered instructions
-  ending with a short self-check list.
-- Output format, exactly:
+  ending with a short self-check list. No HTML or XML tags.
+- Output format, exactly (the instructions go directly after the second '---' line):
 === SKILL: <name> ===
 ---
 name: <name>
 description: <when to use>
 ---
-<body>
+1. <first instruction>
+...
 === END ===
 
 {runs}
@@ -117,10 +122,13 @@ def curate_skills(results_dir="results", source_condition="baseline", out_dir=No
         sections.append(f"## Run of learning task {run['task']}\n### Failed checks\n{checks}\n"
                         f"### End of the trace\n{run['trace']}")
     prompt = CURATOR_PROMPT.format(max_skills=max_skills, runs="\n\n".join(sections))
-    reply = (model or make_model()).invoke(prompt).content
+    reply = (model or make_model()).invoke(prompt).text     # .text: content có thể là danh sách khối (Gemini 3)
 
+    blocks = parse_skill_blocks(reply)
+    if not blocks:
+        print("WARNING: câu trả lời của mô hình không có khối '=== SKILL: <name> ==='.")
     written = []
-    for name, text in parse_skill_blocks(reply):
+    for name, text in blocks:
         if len(written) >= max_skills:
             break
         problems = validate_skill(text, expected_name=name)

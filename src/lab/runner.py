@@ -87,16 +87,19 @@ def run_task(task_id: str, condition: str, results_dir="results", model=None, re
         agent = build_agent(sandbox, mode=cfg["mode"], use_skills=skills_dir is not None, model=model)
         usage = UsageMetadataCallbackHandler()
         t0 = time.perf_counter()
+        # stream(values) thay cho invoke: giữ trạng thái cuối cùng nhận được để vẫn có vết khi lỗi
+        # (ví dụ GraphRecursionError); khi không lỗi, kết quả giống hệt invoke.
+        messages = []
         try:
-            result = agent.invoke(
+            for state in agent.stream(
                 {"messages": [{"role": "user", "content": task.instruction}]},
                 config={"callbacks": [usage], "recursion_limit": recursion_limit},
-            )
-            messages = result["messages"]
-            final = messages[-1].text if messages else ""     # .text: chỉ phần chữ, kể cả khi content là danh sách khối
+                stream_mode="values",
+            ):
+                messages = state.get("messages", messages)
         except Exception as exc:  # noqa: BLE001 - lỗi được ghi lại, không làm dừng chương trình
             record["error"] = f"{type(exc).__name__}: {exc}"
-            messages, final = [], ""
+        final = messages[-1].text if messages and not record["error"] else ""   # .text: chỉ phần chữ của content
 
         record["seconds"] = round(time.perf_counter() - t0, 1)
         totals = {"input": 0, "output": 0, "total": 0}
